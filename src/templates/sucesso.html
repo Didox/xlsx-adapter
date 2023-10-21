@@ -1,0 +1,11 @@
+{% include 'shared/header.html' %}
+        {% if mensagem %}
+        <div class="alert alert-success">
+            {{ mensagem }}
+        </div>
+        {% endif %}
+
+        <a href="/download?caminho_arquivo_mesclado={{caminho_arquivo_mesclado}}" class="btn btn-primary">Download arquivo</a>
+        <a href="/" class="btn btn-warning">Voltar para home</a>
+    </div>
+{% include 'shared/footer.html' %}

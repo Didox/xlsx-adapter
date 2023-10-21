@@ -1,0 +1,22 @@
+{% include 'shared/header.html' %}
+        {% if erro %}
+        <div class="alert alert-danger">
+            {{ erro }}
+        </div>
+        {% endif %}
+
+        {% if mensagem %}
+        <div class="alert alert-success">
+            {{ mensagem }}
+        </div>
+        {% endif %}
+    
+        <form action="/upload" method="POST" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label for="arquivo" class="form-label">Selecione o arquivo (.xlsx, .csv)</label>
+                <input type="file" class="form-control" id="arquivo" name="arquivo" accept=".xlsx, .csv" aria-describedby="emailHelp">
+            </div>
+            <button type="submit" class="btn btn-primary">Enviar</button>
+        </form>
+    </div>
+{% include 'shared/footer.html' %}

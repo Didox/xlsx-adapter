@@ -1,0 +1,42 @@
+{% include 'shared/header.html' %}
+        {% if mensagem %}
+        <div class="alert alert-success">
+            {{ mensagem }}
+        </div>
+        {% endif %}
+
+        <hr>
+        <h3 class="mt-4">Agora vamos adaptar os dados com o modelo abaixo:</h3>
+        <form method="POST" action="/arquivo-mesclado">
+            <input type="hidden" value="{{arquivo_enviado}}" name="arquivo_enviado">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Coluna do Arquivo Modelo</th>
+                        <th>Coluna do Arquivo Enviado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for col_modelo in colunas_arquivo_modelo %}
+                    <tr>
+                        <td>{{ col_modelo }}</td>
+                        <td>
+                            <select name="{{ col_modelo }}" class="form-select">
+                                <option value="">Selecione uma coluna</option>
+                                {% for col_enviado in colunas_arquivo_enviado %}
+                                    <option value="{{ col_enviado }}">{{ col_enviado }}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <button type="submit" class="btn btn-primary">Transformar</button>
+        </form>
+        <br>
+        <br>
+        <br>
+        <br>
+    </div>
+{% include 'shared/footer.html' %}
