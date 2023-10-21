@@ -71,6 +71,9 @@ def arquivo_mesclado():
 
     arquivo_enviado = formulario.get("arquivo_enviado")
 
+    if not arquivo_enviado:
+        return render_template('index.html', erro="Nenhum arquivo enviado.")
+
     # Lê o arquivo enviado pelo usuário
     try:
         if arquivo_enviado.endswith('.csv'):
@@ -82,6 +85,9 @@ def arquivo_mesclado():
 
     # Crie um novo DataFrame para armazenar os dados mesclados
     df_mesclado = pd.DataFrame()
+
+    # Crie um DataFrame separado para as colunas extras
+    df_extras = pd.DataFrame()
 
     # Itera pelas colunas do arquivo modelo
     for coluna_modelo in colunas_arquivo_modelo:
@@ -95,22 +101,36 @@ def arquivo_mesclado():
         else:
             df_mesclado[coluna_modelo] = ""
 
-    # Salve o novo arquivo mesclado
+    # Verifica se há colunas extras no arquivo enviado pelo usuário
+    colunas_extras = [coluna for coluna in df_enviado.columns if coluna not in colunas_arquivo_modelo]
+
+    if colunas_extras:
+        # Se houver colunas extras, adicione-as ao DataFrame de extras
+        for coluna_extra in colunas_extras:
+            df_extras[coluna_extra] = df_enviado[coluna_extra]
+
+        # Salve o arquivo de colunas extras
+        caminho_arquivo_extras = "arquivos/transformados/extras.xlsx"
+        df_extras.to_excel(caminho_arquivo_extras, index=False)
+    else:
+        caminho_arquivo_extras = None
+
+    # Salve o arquivo mesclado
     caminho_arquivo_mesclado = "arquivos/transformados/mesclado.xlsx"
     df_mesclado.to_excel(caminho_arquivo_mesclado, index=False)
 
     mensagem = "Arquivo mesclado foi criado com sucesso!"
 
-    return render_template('sucesso.html', mensagem=mensagem, caminho_arquivo_mesclado=caminho_arquivo_mesclado)
+    return render_template('sucesso.html', mensagem=mensagem, caminho_arquivo_mesclado=caminho_arquivo_mesclado, caminho_arquivo_extras=caminho_arquivo_extras)
 
 @app.route('/download', methods=['GET'])
 def download():
-    # Obtenha o caminho do arquivo mesclado do parâmetro da consulta na URL
     caminho_arquivo_mesclado = request.args.get('caminho_arquivo_mesclado')
+    caminho_arquivo_extras = request.args.get('caminho_arquivo_extras')
 
-    # Verifique se o caminho do arquivo está definido
-    if caminho_arquivo_mesclado is None:
+    if caminho_arquivo_mesclado is not None:
+        return send_file(caminho_arquivo_mesclado, as_attachment=True)
+    elif caminho_arquivo_extras is not None:
+        return send_file(caminho_arquivo_extras, as_attachment=True)
+    else:
         return render_template('index.html', erro="Caminho do arquivo não especificado.")
-
-    # Use send_file para enviar o arquivo como resposta para download
-    return send_file(caminho_arquivo_mesclado, as_attachment=True)

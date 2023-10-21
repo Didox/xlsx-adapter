@@ -6,6 +6,11 @@
         {% endif %}
 
         <a href="/download?caminho_arquivo_mesclado={{caminho_arquivo_mesclado}}" class="btn btn-primary">Download arquivo</a>
+        
+        {% if caminho_arquivo_extras %}
+            <a href="/download?caminho_arquivo_extras={{caminho_arquivo_extras}}" class="btn btn-danger">Download arquivo extra</a>
+        {% endif %}
+        
         <a href="/" class="btn btn-warning">Voltar para home</a>
     </div>
 {% include 'shared/footer.html' %}
